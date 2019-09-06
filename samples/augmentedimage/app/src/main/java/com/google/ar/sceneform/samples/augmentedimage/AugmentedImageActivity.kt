@@ -21,7 +21,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ImageView
 import com.google.ar.core.AugmentedImage
-import com.google.ar.core.Frame
+import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.samples.common.helpers.SnackbarHelper
 import com.google.ar.sceneform.ux.ArFragment
@@ -54,7 +54,7 @@ class AugmentedImageActivity : AppCompatActivity() {
         arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as ArFragment?
         fitToScanView = findViewById(R.id.image_view_fit_to_scan)
 
-        arFragment!!.arSceneView.scene.addOnUpdateListener(OnUpdateListener { this.onUpdateFrame(it) })
+        arFragment!!.arSceneView.scene.addOnUpdateListener{ this.onUpdateFrame(it) }
     }
 
     override fun onResume() {

@@ -95,7 +95,7 @@ class SnackbarHelper {
     }
 
     companion object {
-        private val BACKGROUND_COLOR = -0x40cdcdce
+        private const val BACKGROUND_COLOR = -0x40cdcdce
         val instance = SnackbarHelper()
     }
 }

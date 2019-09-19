@@ -40,6 +40,7 @@ import java.io.InputStream
  */
 class AugmentedImageFragment : ArFragment() {
 
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
@@ -47,8 +48,10 @@ class AugmentedImageFragment : ArFragment() {
         // Sceneform eventually.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Log.e(TAG, "Sceneform requires Android N or later")
-            SnackbarHelper.getInstance()
-                    .showError(activity, "Sceneform requires Android N or later")
+            activity?.let {
+                SnackbarHelper.instance
+                        .showError(it, "Sceneform requires Android N or later")
+            }
         }
 
         val openGlVersionString = (context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
@@ -56,8 +59,10 @@ class AugmentedImageFragment : ArFragment() {
                 .glEsVersion
         if (java.lang.Double.parseDouble(openGlVersionString) < MIN_OPENGL_VERSION) {
             Log.e(TAG, "Sceneform requires OpenGL ES 3.0 or later")
-            SnackbarHelper.getInstance()
-                    .showError(activity, "Sceneform requires OpenGL ES 3.0 or later")
+            activity?.let {
+                SnackbarHelper.instance
+                        .showError(it, "Sceneform requires OpenGL ES 3.0 or later")
+            }
         }
     }
 
@@ -75,14 +80,16 @@ class AugmentedImageFragment : ArFragment() {
     override fun getSessionConfiguration(session: Session): Config {
         val config = super.getSessionConfiguration(session)
         if (!setupAugmentedImageDatabase(config, session)) {
-            SnackbarHelper.getInstance()
-                    .showError(activity, "Could not setup augmented image database")
+            activity?.let {
+                SnackbarHelper.instance
+                        .showError(it, "Could not setup augmented image database")
+            }
         }
         return config
     }
 
     private fun setupAugmentedImageDatabase(config: Config, session: Session): Boolean {
-        var augmentedImageDatabase: AugmentedImageDatabase? = null
+        val augmentedImageDatabase: AugmentedImageDatabase
 
         val assetManager = if (context != null) context!!.assets else null
         if (assetManager == null) {
@@ -109,7 +116,8 @@ class AugmentedImageFragment : ArFragment() {
             // This is an alternative way to initialize an AugmentedImageDatabase instance,
             // load a pre-existing augmented image database.
             try {
-                context!!.assets.open(SAMPLE_IMAGE_DATABASE).use { `is` -> augmentedImageDatabase = AugmentedImageDatabase.deserialize(session, `is`) }
+                val inputStream =  context!!.assets.open(SAMPLE_IMAGE_DATABASE)
+                augmentedImageDatabase = AugmentedImageDatabase.deserialize(session, inputStream)
             } catch (e: IOException) {
                 Log.e(TAG, "IO exception loading augmented image database.", e)
                 return false
@@ -123,7 +131,8 @@ class AugmentedImageFragment : ArFragment() {
 
     private fun loadAugmentedImageBitmap(assetManager: AssetManager): Bitmap? {
         try {
-            assetManager.open(DEFAULT_IMAGE_NAME).use { `is` -> return BitmapFactory.decodeStream(`is`) }
+            val inputStream =  assetManager.open(DEFAULT_IMAGE_NAME)
+            return BitmapFactory.decodeStream(inputStream)
         } catch (e: IOException) {
             Log.e(TAG, "IO exception loading augmented image bitmap.", e)
         }

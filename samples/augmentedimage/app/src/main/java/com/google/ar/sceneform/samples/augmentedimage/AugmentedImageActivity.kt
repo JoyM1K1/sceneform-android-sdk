@@ -81,7 +81,7 @@ class AugmentedImageActivity : AppCompatActivity() {
                     // When an image is in PAUSED state, but the camera is not PAUSED, it has been detected,
                     // but not yet tracked.
                     val text = "Detected Image " + augmentedImage.index
-                    SnackbarHelper.getInstance().showMessage(this, text)
+                    SnackbarHelper.instance.showMessage(this, text)
                 }
 
                 TrackingState.TRACKING -> {
@@ -92,7 +92,7 @@ class AugmentedImageActivity : AppCompatActivity() {
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
                         val node = AugmentedImageNode(this)
                         node.image = augmentedImage
-                        augmentedImageMap[augmentedImage] = node
+                        augmentedImageMap.put(augmentedImage, node)
                         arFragment!!.arSceneView.scene.addChild(node)
                     }
                 }

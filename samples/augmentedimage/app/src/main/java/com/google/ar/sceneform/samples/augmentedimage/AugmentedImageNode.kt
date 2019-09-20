@@ -33,12 +33,19 @@ import java.util.concurrent.CompletableFuture
 class AugmentedImageNode(context: Context) : AnchorNode() {
 
     // The augmented image represented by this node.
+    // augmented image はこの node で表現される
     /**
      * Called when the AugmentedImage is detected and should be rendered. A Sceneform node tree is
      * created based on an Anchor created from the image. The corners are then positioned based on the
      * extents of the image. There is no need to worry about world coordinates since everything is
      * relative to the center of the image, which is the parent node of the corners.
      */
+    /**
+     * AugmentedImage が 検出され，レンダリングする必要がある時に呼び出される．
+     * Seceform node tree は image から生成される Anchor に基づいて生成される．
+     * 次に image の範囲に基づいて角が配置される．
+     * 全ては角の parent node である image の角と相対的に決まるので world coordinate について心配する必要はない．
+    */
     // If any of the models are not loaded, then recurse when all are loaded.
     // Set the anchor based on the center of the image.
     // Make the 4 corner nodes.
@@ -51,7 +58,7 @@ class AugmentedImageNode(context: Context) : AnchorNode() {
             field = image
             if (!ulCorner!!.isDone || !urCorner!!.isDone || !llCorner!!.isDone || !lrCorner!!.isDone) {
                 CompletableFuture.allOf(ulCorner, urCorner, llCorner, lrCorner)
-                        .thenAccept { aVoid: Void -> val image = image }
+                        .thenAccept {this.image = image}
                         .exceptionally { throwable ->
                             Log.e(TAG, "Exception loading", throwable)
                             null

@@ -92,7 +92,7 @@ class AugmentedImageActivity : AppCompatActivity() {
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
                         val node = AugmentedImageNode(this)
                         node.image = augmentedImage
-                        augmentedImageMap.put(augmentedImage, node)
+                        augmentedImageMap[augmentedImage] = node
                         arFragment!!.arSceneView.scene.addChild(node)
                     }
                 }
